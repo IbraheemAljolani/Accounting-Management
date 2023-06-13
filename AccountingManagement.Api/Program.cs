@@ -1,9 +1,12 @@
 using AccountingManagement.Core.IUnitOfWork;
 using AccountingManagement.Core.Models;
 using AccountingManagement.Infrastructure.UnitOfWork;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using System.Reflection;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,12 +29,6 @@ builder.Services.AddSwaggerGen(options =>
     {
         Version = "v1",
         Title = "Accounting Management",
-        TermsOfService = new Uri("https://example.com/terms"),
-        Contact = new OpenApiContact
-        {
-            Name = "Example Contact",
-            Url = new Uri("https://example.com/contact")
-        }
     });
 
     // using System.Reflection;
@@ -56,6 +53,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

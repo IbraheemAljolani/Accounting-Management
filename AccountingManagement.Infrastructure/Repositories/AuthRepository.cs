@@ -3,6 +3,7 @@ using AccountingManagement.Core.Helpers;
 using AccountingManagement.Core.Interface;
 using AccountingManagement.Core.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Win32;
 using Serilog;
@@ -50,7 +51,7 @@ namespace AccountingManagement.Infrastructure.Repositories
         #endregion
 
         #region Registration Repositories
-        public async Task<int> RegistrationAsync(RegistrationDTO registration)
+        public async Task<int> RegistrationAsync(RegistrationDTO registrationDTO)
         {
             try
             {
@@ -60,33 +61,60 @@ namespace AccountingManagement.Infrastructure.Repositories
                 user.ServerDateTime = DateTime.Now;
                 user.DateTimeUtc = DateTime.UtcNow;
                 user.UpdateDateTimeUtc = SqlDateTime.MinValue.Value;
-                user.Username = registration.Username;
-                user.Email = registration.Email;
-                user.FirstName = registration.FirstName;
-                user.LastName = registration.LastName;
+                user.Username = registrationDTO.Username;
+                user.Email = registrationDTO.Email;
+                user.FirstName = registrationDTO.FirstName;
+                user.LastName = registrationDTO.LastName;
                 user.Status = 1;
-                user.Gender = (int)Enum.Parse(typeof(UserGender), registration.Gender);
-                user.DateOfBirth = registration.DateOfBirth;
+                user.Gender = (int)Enum.Parse(typeof(UserGender), registrationDTO.Gender);
+                user.DateOfBirth = registrationDTO.DateOfBirth;
                 await _context.AddAsync(user);
                 rowsaffected += await _context.SaveChangesAsync();
 
-                HelperApi.CreatePasswordHash(registration.Password, out byte[] passwordHash, out byte[] passwordSalt);
+                HelperApi.CreatePasswordHash(registrationDTO.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
                 LoginTable login = new LoginTable();
-                login.Email = registration.Email;
+                login.Email = registrationDTO.Email;
                 login.PasswordHash = passwordHash;
                 login.PasswordSalt = passwordSalt;
-                login.IsActive = true;
+                login.IsActive = false;
                 login.UserId = user.UserId;
-                    //_context.UserTables.SingleOrDefault(x => x.Email == registration.Email).UserId;
+                //_context.UserTables.SingleOrDefault(x => x.Email == registration.Email).UserId;
                 await _context.AddAsync(login);
                 rowsaffected += await _context.SaveChangesAsync();
                 return rowsaffected;
             }
             catch (Exception ex)
             {
-                Log.Error(ex.Message, ex.InnerException);
+                Log.Error(ex.Message);
                 return 0;
+            }
+        }
+        #endregion
+
+        #region Login Repositories
+        public async Task<string> LoginAsync(LoginDTO loginDTO, string JWTkey)
+        {
+            try
+            {
+                var checkAccount = await _context.LoginTables.SingleOrDefaultAsync(x => x.Email == loginDTO.Email);
+
+                HelperApi helperApi = new HelperApi(_context);
+
+                string tokin = helperApi.GenerateJwtToken(loginDTO, JWTkey);
+                if (tokin == null)
+                    return null;
+
+                checkAccount.IsActive = true;
+                _context.Update(checkAccount);
+                await _context.SaveChangesAsync();
+
+                return tokin;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+                return ex.Message;
             }
         }
         #endregion

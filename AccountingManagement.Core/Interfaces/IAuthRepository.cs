@@ -9,6 +9,7 @@ namespace AccountingManagement.Core.Interface
 {
     public interface IAuthRepository
     {
-        Task<int> RegistrationAsync(RegistrationDTO registration);
+        Task<int> RegistrationAsync(RegistrationDTO registrationDTO);
+        Task<string> LoginAsync(LoginDTO loginDTO,string JWTkey);
     }
 }
