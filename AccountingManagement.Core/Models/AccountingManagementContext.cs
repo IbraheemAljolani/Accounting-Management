@@ -9,7 +9,7 @@ namespace AccountingManagement.Core.Models
     public partial class AccountingManagementContext : DbContext
     {
         private readonly IConfiguration _configuration;
-        private static string AMConnection;
+        private static string AMContext;
         public AccountingManagementContext()
         {
         }
@@ -18,7 +18,7 @@ namespace AccountingManagement.Core.Models
             : base(options)
         {
             _configuration = configuration;
-            AMConnection = _configuration.GetConnectionString("EFConnection");
+            AMContext = _configuration.GetConnectionString("AMContext");
         }
 
         public virtual DbSet<AccountTable> AccountTables { get; set; } = null!;
@@ -30,7 +30,7 @@ namespace AccountingManagement.Core.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(AMConnection);
+                optionsBuilder.UseSqlServer(AMContext);
             }
         }
 
@@ -88,10 +88,6 @@ namespace AccountingManagement.Core.Models
                 entity.Property(e => e.Email)
                     .HasMaxLength(255)
                     .IsUnicode(false);
-
-                entity.Property(e => e.LastLogin).HasColumnType("datetime");
-
-                entity.Property(e => e.LastLogout).HasColumnType("datetime");
 
                 entity.Property(e => e.UserId).HasColumnName("User_ID");
 
