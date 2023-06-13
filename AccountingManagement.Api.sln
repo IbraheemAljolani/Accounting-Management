@@ -5,6 +5,10 @@ VisualStudioVersion = 17.5.33516.290
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccountingManagement.Api", "AccountingManagement.Api\AccountingManagement.Api.csproj", "{404B23E7-56D2-4465-AE70-6D01D0D28743}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccountingManagement.Core", "AccountingManagement.Core\AccountingManagement.Core.csproj", "{534124F9-D253-4153-9D06-53F0B087CF84}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AccountingManagement.Infrastructure", "AccountingManagement.Infrastructure\AccountingManagement.Infrastructure.csproj", "{589CD658-F308-4C32-9349-BCB2BC8E5D6D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{404B23E7-56D2-4465-AE70-6D01D0D28743}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{404B23E7-56D2-4465-AE70-6D01D0D28743}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{404B23E7-56D2-4465-AE70-6D01D0D28743}.Release|Any CPU.Build.0 = Release|Any CPU
+		{534124F9-D253-4153-9D06-53F0B087CF84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{534124F9-D253-4153-9D06-53F0B087CF84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{534124F9-D253-4153-9D06-53F0B087CF84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{534124F9-D253-4153-9D06-53F0B087CF84}.Release|Any CPU.Build.0 = Release|Any CPU
+		{589CD658-F308-4C32-9349-BCB2BC8E5D6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{589CD658-F308-4C32-9349-BCB2BC8E5D6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{589CD658-F308-4C32-9349-BCB2BC8E5D6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{589CD658-F308-4C32-9349-BCB2BC8E5D6D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
