@@ -22,9 +22,8 @@ namespace AccountingManagement.Core.DTOs.AuthDTOs
         [Required(ErrorMessage = "The gender field is required. You must choose from the dropdown list.")]
         public string Gender { get; set; }
         public DateTime DateOfBirth { get; set; }
-
         [Required(ErrorMessage = "Password field is required.")]
-        [RegularExpression(@"^(?=.*[A-Z])(?=.*\d)\S{8,}$",ErrorMessage =("Incorrect password should:\r\n1 - At least one capital letter.\r\n2 - at least one number.\r\n3 - It does not contain any spaces.\r\n4- It must be at least 8 characters long."))]
+        [RegularExpression(@"^(?=.*[A-Z])(?=.*\d)\S{8,}$",ErrorMessage =("Incorrect password should: 1- At least one capital letter. 2- at least one number. 3- It does not contain any spaces. 4- It must be at least 8 characters long."))]
         public string Password { get; set; }
     }
 }

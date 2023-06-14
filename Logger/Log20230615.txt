@@ -1,0 +1,2 @@
+2023-06-15 00:20:05.272 +03:00 [ERR] The string 'string' was not recognized as a valid DateTime. There is an unknown word starting at index '0'.
+2023-06-15 00:20:05.364 +03:00 [ERR] The string 'string' was not recognized as a valid DateTime. There is an unknown word starting at index '0'.

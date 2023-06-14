@@ -86,21 +86,40 @@ namespace AccountingManagement.Core.Helpers
         {
             String toke = "Bearer " + tokenString;
             var jwtEncodedString = toke.Substring(7);
+            var token = new JwtSecurityToken(jwtEncodedString);
 
-            var token = new JwtSecurityToken(jwtEncodedString: jwtEncodedString);
             DateTime dateTime = DateTime.UtcNow;
             DateTime expires = token.ValidTo;
             if (dateTime < expires)
             {
                 LoginResponseDTO tempResponse = new LoginResponseDTO();
                 tempResponse.Email = null;
-                tempResponse.LoginId = Int32.Parse((token.Claims.First(x => x.Type == "LoginId").Value.ToLower()));
+                tempResponse.LoginId = Int32.Parse((token.Claims.First(x => x.Type == "LoginId").Value.ToString()));
                 tempResponse.UserId = Int32.Parse(token.Claims.First(x => x.Type == "UserId").Value.ToString());
                 respon = tempResponse;
                 return true;
             }
             respon = null;
             return false;
+        }
+        #endregion
+
+        #region User Id JWTtoken
+        public static int UserIdJWTtoken(string tokenString, out int userIdToken)
+        {
+            String toke = "Bearer " + tokenString;
+            var jwtEncodedString = toke.Substring(7);
+            var token = new JwtSecurityToken(jwtEncodedString);
+
+            DateTime dateTime = DateTime.UtcNow;
+            DateTime expires = token.ValidTo;
+            if (dateTime < expires)
+            {
+                userIdToken = Int32.Parse(token.Claims.First(x => x.Type == "UserId").Value.ToString());
+                return userIdToken;
+            }
+            userIdToken = 0;
+            return 0;
         }
         #endregion
     }

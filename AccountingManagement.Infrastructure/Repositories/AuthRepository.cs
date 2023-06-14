@@ -23,8 +23,8 @@ namespace AccountingManagement.Infrastructure.Repositories
     #region enum User Status
     public enum UserStatus
     {
-        Delete = 1,
-        Active
+        Active = 1,
+        Delete
     }
     #endregion
 
@@ -50,7 +50,7 @@ namespace AccountingManagement.Infrastructure.Repositories
         }
         #endregion
 
-        #region RegistrationAsync Repositories
+        #region RegistrationAsync Repository
         public async Task<int> RegistrationAsync(RegistrationDTO registrationDTO)
         {
             try
@@ -92,7 +92,7 @@ namespace AccountingManagement.Infrastructure.Repositories
         }
         #endregion
 
-        #region LoginAsync Repositories
+        #region LoginAsync Repository
         public async Task<string> LoginAsync(LoginDTO loginDTO, string JWTkey)
         {
             try
@@ -124,7 +124,7 @@ namespace AccountingManagement.Infrastructure.Repositories
         }
         #endregion
 
-        #region LogoutAsync Repositories
+        #region LogoutAsync Repository
         public async Task<int> LogoutAsync(string token)
         {
             try
@@ -157,7 +157,7 @@ namespace AccountingManagement.Infrastructure.Repositories
         }
         #endregion
 
-        #region ForgotPasswordAsync Repositories
+        #region ForgotPasswordAsync Repository
         public async Task<int> ForgotPasswordAsync(ForgotPasswordDTO passwordDTO)
         {
             try

@@ -26,6 +26,7 @@ namespace AccountingManagement.Api.Controllers
         {
             this._context = _context;
             this._unitOfWork = _unitOfWork;
+            this._configuration = _configuration;
             JWTkey = _configuration.GetValue<String>("JWTKey");
         }
         #endregion
@@ -40,12 +41,12 @@ namespace AccountingManagement.Api.Controllers
         {
             try
             {
-                var checkRecurrenceLogin = await _context.LoginTables.SingleOrDefaultAsync(x => x.Email == registrationDTO.Email);
-                if (checkRecurrenceLogin != null)
+                var checkEmailUsage = await _context.LoginTables.SingleOrDefaultAsync(x => x.Email == registrationDTO.Email);
+                if (checkEmailUsage != null)
                     return BadRequest("Email is already registered.");
 
-                var checkRecurrenceUser = await _context.UserTables.SingleOrDefaultAsync(x => x.Username == registrationDTO.Username);
-                if (checkRecurrenceUser != null)
+                var checkUsernameUsage = await _context.UserTables.SingleOrDefaultAsync(x => x.Username == registrationDTO.Username);
+                if (checkUsernameUsage != null)
                     return BadRequest("Username is already registered.");
 
                 var loseEffect = await _unitOfWork.AuthRepository.RegistrationAsync(registrationDTO);
@@ -72,15 +73,16 @@ namespace AccountingManagement.Api.Controllers
         {
             try
             {
-                var CheckEmail = await _context.LoginTables.SingleOrDefaultAsync(x => x.Email == loginDTO.Email);
-                if (CheckEmail == null)
+                var isValidEmail = await _context.LoginTables.SingleOrDefaultAsync(x => x.Email == loginDTO.Email);
+                if (isValidEmail == null)
                     return NotFound("The email does not exist. Please check the validity of the email and try again.");
 
-                if (!HelperApi.VerifyPasswordHash(loginDTO.Password, CheckEmail.PasswordHash, CheckEmail.PasswordSalt))
-                    return NotFound("Incorrect password.");
+                var isValidUser = await _context.UserTables.SingleOrDefaultAsync(x => x.Email == loginDTO.Email && x.Status == 2);
+                if (isValidUser != null)
+                    return Unauthorized("The user has been deleted.");
 
-                if (CheckEmail.IsActive)
-                    return BadRequest("User is already logged in.");
+                if (!HelperApi.VerifyPasswordHash(loginDTO.Password, isValidEmail.PasswordHash, isValidEmail.PasswordSalt))
+                    return NotFound("Incorrect password.");
 
                 var token = await _unitOfWork.AuthRepository.LoginAsync(loginDTO, JWTkey);
                 if (token == null)
@@ -101,13 +103,13 @@ namespace AccountingManagement.Api.Controllers
         /// Logs out a user.
         /// </summary>
         [HttpPut]
-        [Route("Logout")]
-        public async Task<IActionResult> Logout([FromHeader] string token)
+        [Route("Logout/{token}")]
+        public async Task<IActionResult> Logout([FromRoute] string token)
         {
             try
             {
-                var ckeckLogout = await _unitOfWork.AuthRepository.LogoutAsync(token);
-                if (ckeckLogout <= 0)
+                var isLogout = await _unitOfWork.AuthRepository.LogoutAsync(token);
+                if (isLogout <= 0)
                     return NotFound("Please log in first.");
 
                 return Ok("Logout successful.");
@@ -133,6 +135,10 @@ namespace AccountingManagement.Api.Controllers
                 var checkAccount = await _context.LoginTables.SingleOrDefaultAsync(x => x.Email == passwordDTO.Email);
                 if (checkAccount == null)
                     return NotFound("Email not found");
+
+                var checkUser = await _context.UserTables.SingleOrDefaultAsync(x => x.Status == 2);
+                if (checkUser != null)
+                    return Unauthorized("The user has been deleted.");
 
                 var changePassword = await _unitOfWork.AuthRepository.ForgotPasswordAsync(passwordDTO);
                 if (changePassword <= 0)

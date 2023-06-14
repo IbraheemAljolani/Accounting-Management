@@ -1,4 +1,5 @@
 ﻿using AccountingManagement.Core.Interface;
+using AccountingManagement.Core.Interfaces;
 using AccountingManagement.Core.IUnitOfWork;
 using AccountingManagement.Core.Models;
 using AccountingManagement.Infrastructure.Repositories;
@@ -15,6 +16,7 @@ namespace AccountingManagement.Infrastructure.UnitOfWork
         #region Fields & Properties
         private readonly AccountingManagementContext _context;
         public IAuthRepository AuthRepository {get; private set;}
+        public IUserRepository UserRepository { get; private set;}
 
         #endregion
 
@@ -23,6 +25,7 @@ namespace AccountingManagement.Infrastructure.UnitOfWork
         {
             this._context = _context;
             AuthRepository = new AuthRepository(_context);
+            UserRepository = new UserRepository(_context);
         }
         #endregion
 
