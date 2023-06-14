@@ -5,3 +5,4 @@
 2023-06-14 00:32:54.887 +03:00 [ERR] String reference not set to an instance of a String. (Parameter 's') Inner Exception: 
 2023-06-14 00:32:54.915 +03:00 [INF] ok
 2023-06-14 00:34:06.910 +03:00 [ERR] Object reference not set to an instance of an object.
+2023-06-14 10:23:55.126 +03:00 [ERR] Sequence contains no matching element

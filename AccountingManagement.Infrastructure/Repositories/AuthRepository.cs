@@ -50,7 +50,7 @@ namespace AccountingManagement.Infrastructure.Repositories
         }
         #endregion
 
-        #region Registration Repositories
+        #region RegistrationAsync Repositories
         public async Task<int> RegistrationAsync(RegistrationDTO registrationDTO)
         {
             try
@@ -92,16 +92,21 @@ namespace AccountingManagement.Infrastructure.Repositories
         }
         #endregion
 
-        #region Login Repositories
+        #region LoginAsync Repositories
         public async Task<string> LoginAsync(LoginDTO loginDTO, string JWTkey)
         {
             try
             {
                 var checkAccount = await _context.LoginTables.SingleOrDefaultAsync(x => x.Email == loginDTO.Email);
+                var user = await _context.UserTables.SingleOrDefaultAsync(x => x.Email == loginDTO.Email);
+
+                LoginResponseDTO responseDTO = new LoginResponseDTO();
+                responseDTO.LoginId = checkAccount.LoginId;
+                responseDTO.UserId = user.UserId;
+                responseDTO.Email = loginDTO.Email;
 
                 HelperApi helperApi = new HelperApi(_context);
-
-                string tokin = helperApi.GenerateJwtToken(loginDTO, JWTkey);
+                string tokin = helperApi.GenerateJwtToken(responseDTO, JWTkey);
                 if (tokin == null)
                     return null;
 
@@ -115,6 +120,63 @@ namespace AccountingManagement.Infrastructure.Repositories
             {
                 Log.Error(ex.Message);
                 return ex.Message;
+            }
+        }
+        #endregion
+
+        #region LogoutAsync Repositories
+        public async Task<int> LogoutAsync(string token)
+        {
+            try
+            {
+                LoginResponseDTO loginResponseDTO = new LoginResponseDTO();
+                if (HelperApi.ValidateJWTtoken(token, out loginResponseDTO))
+                {
+                    if (loginResponseDTO.LoginId != 0)
+                    {
+                        var login = await _context.LoginTables.SingleOrDefaultAsync(x => x.LoginId == loginResponseDTO.LoginId);
+
+                        if (login != null)
+                        {
+                            if (login.IsActive == true)
+                            {
+                                login.IsActive = false;
+                                _context.Update(login);
+                                return await _context.SaveChangesAsync();
+                            }
+                        }
+                    }
+                }
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+                return 0;
+            }
+        }
+        #endregion
+
+        #region ForgotPasswordAsync Repositories
+        public async Task<int> ForgotPasswordAsync(ForgotPasswordDTO passwordDTO)
+        {
+            try
+            {
+                var login = await _context.LoginTables.SingleOrDefaultAsync(x => x.Email == passwordDTO.Email);
+                if (passwordDTO.NewPassword == passwordDTO.ConfirmPassword)
+                {
+                    HelperApi.CreatePasswordHash(passwordDTO.NewPassword, out byte[] passwordHash, out byte[] passwordSalt);
+                    login.PasswordHash = passwordHash;
+                    login.PasswordSalt = passwordSalt;
+                    _context.Update(login);
+                    return await _context.SaveChangesAsync();
+                }
+                return 0;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+                return 0;
             }
         }
         #endregion

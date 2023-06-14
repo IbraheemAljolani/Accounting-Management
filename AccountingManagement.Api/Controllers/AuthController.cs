@@ -67,13 +67,13 @@ namespace AccountingManagement.Api.Controllers
         /// Logs in a user.
         /// </summary>
         [HttpPut]
-        [Route("action")]
+        [Route("Login")]
         public async Task<IActionResult> Login([FromBody] LoginDTO loginDTO)
         {
             try
             {
                 var CheckEmail = await _context.LoginTables.SingleOrDefaultAsync(x => x.Email == loginDTO.Email);
-                if (CheckEmail == null) 
+                if (CheckEmail == null)
                     return NotFound("The email does not exist. Please check the validity of the email and try again.");
 
                 if (!HelperApi.VerifyPasswordHash(loginDTO.Password, CheckEmail.PasswordHash, CheckEmail.PasswordSalt))
@@ -92,6 +92,58 @@ namespace AccountingManagement.Api.Controllers
             {
                 Log.Error(ex.Message);
                 return BadRequest("An error occurred while logging in. Please try again.");
+            }
+        }
+        #endregion
+
+        #region Logout
+        /// <summary>
+        /// Logs out a user.
+        /// </summary>
+        [HttpPut]
+        [Route("Logout")]
+        public async Task<IActionResult> Logout([FromHeader] string token)
+        {
+            try
+            {
+                var ckeckLogout = await _unitOfWork.AuthRepository.LogoutAsync(token);
+                if (ckeckLogout <= 0)
+                    return NotFound("Please log in first.");
+
+                return Ok("Logout successful.");
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+                return BadRequest(ex.Message);
+            }
+        }
+        #endregion
+
+        #region ForgotPassword
+        /// <summary>
+        /// Initiates the password reset process for a user.
+        /// </summary>
+        [HttpPut]
+        [Route("ForgotPassword")]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDTO passwordDTO)
+        {
+            try
+            {
+                var checkAccount = await _context.LoginTables.SingleOrDefaultAsync(x => x.Email == passwordDTO.Email);
+                if (checkAccount == null)
+                    return NotFound("Email not found");
+
+                var changePassword = await _unitOfWork.AuthRepository.ForgotPasswordAsync(passwordDTO);
+                if (changePassword <= 0)
+                    return BadRequest("An error occurred while processing the password reset request.");
+
+                return Ok("Password has been modified successfully.");
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex.Message);
+                return BadRequest(ex.Message);
             }
         }
         #endregion

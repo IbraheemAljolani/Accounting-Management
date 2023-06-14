@@ -11,5 +11,7 @@ namespace AccountingManagement.Core.Interface
     {
         Task<int> RegistrationAsync(RegistrationDTO registrationDTO);
         Task<string> LoginAsync(LoginDTO loginDTO,string JWTkey);
+        Task<int> LogoutAsync(string token);
+        Task<int> ForgotPasswordAsync(ForgotPasswordDTO passwordDTO);
     }
 }
