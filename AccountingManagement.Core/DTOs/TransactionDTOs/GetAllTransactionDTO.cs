@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace AccountingManagement.Core.Models
+namespace AccountingManagement.Core.DTOs.TransactionDTOs
 {
-    public partial class TransactionTable
+    public class GetAllTransactionDTO
     {
         public int TransactionId { get; set; }
         public int? UserId { get; set; }
@@ -14,8 +17,5 @@ namespace AccountingManagement.Core.Models
         public DateTime ServerDateTime { get; set; }
         public DateTime DateTimeUtc { get; set; }
         public DateTime UpdateDateTimeUtc { get; set; }
-
-        public virtual AccountTable? Account { get; set; }
-        public virtual UserTable? User { get; set; }
     }
 }

@@ -43,7 +43,7 @@ namespace AccountingManagement.Infrastructure.Repositories
                         AccountNumber = x.AccountNumber,
                         Balance = x.Balance.ToString(),
                         Currency = x.Currency,
-                        Status = ((Status)x.Status).ToString()
+                        Status = ((UserStatus)x.Status).ToString()
                     });
 
                 if (userId > 0)
@@ -118,7 +118,7 @@ namespace AccountingManagement.Infrastructure.Repositories
                 if (string.IsNullOrEmpty(editAccountDTO.UserId) || editAccountDTO.UserId != "string")
                 {
                     if (!Regex.IsMatch(editAccountDTO.UserId, @"^\d+$"))
-                        return "Invalid AccountId.";
+                        return "Invalid UserId.";
 
                     var isFoundUser = await _context.UserTables.SingleOrDefaultAsync(x => x.UserId == Int32.Parse(editAccountDTO.UserId));
                     if (isFoundUser == null)
@@ -147,12 +147,12 @@ namespace AccountingManagement.Infrastructure.Repositories
                 }
                 if (string.IsNullOrEmpty(editAccountDTO.Status) || editAccountDTO.Status != "string")
                 {
-                    if (!Enum.IsDefined(typeof(Status), editAccountDTO.Status.ToLower()))
+                    if (!Enum.IsDefined(typeof(UserStatus), editAccountDTO.Status.ToLower()))
                     {
                         throw new ArgumentException("Invalid Status value");
                     }
 
-                    desiredAccount.Status = (int)Enum.Parse(typeof(Status), editAccountDTO.Status.ToLower());
+                    desiredAccount.Status = (int)Enum.Parse(typeof(UserStatus), editAccountDTO.Status.ToLower());
                     desiredAccount.UpdateDateTimeUtc = DateTime.UtcNow;
                 }
                 _context.Update(desiredAccount);

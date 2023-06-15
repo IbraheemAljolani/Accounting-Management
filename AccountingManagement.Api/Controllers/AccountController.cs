@@ -35,7 +35,8 @@ namespace AccountingManagement.Api.Controllers
         [HttpGet]
         [Route("[action]")]
         public async Task<IActionResult> ViewAllAccount([FromQuery, DefaultValue(10)] int pageSize, [FromQuery, DefaultValue(1)] int pageNumber,
-                                                      [FromQuery, DefaultValue(0)] int userId, [FromQuery, DefaultValue(0)] int accountId, [FromQuery, DefaultValue(0)] int accountNumber)
+                                                        [FromQuery, DefaultValue(0)] int userId, [FromQuery, DefaultValue(0)] int accountId,
+                                                        [FromQuery, DefaultValue(0)] int accountNumber)
         {
             try
             {

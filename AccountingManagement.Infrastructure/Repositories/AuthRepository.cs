@@ -49,10 +49,10 @@ namespace AccountingManagement.Infrastructure.Repositories
                 user.Email = registrationDTO.Email;
                 user.FirstName = registrationDTO.FirstName;
                 user.LastName = registrationDTO.LastName;
-                user.Status = 1;
-                if (Enum.IsDefined(typeof(Gender), registrationDTO.Gender.ToLower()))
+                user.Status = 0;
+                if (Enum.IsDefined(typeof(UserGender), registrationDTO.Gender.ToLower()))
                 {
-                    user.Gender = (int)Enum.Parse(typeof(Gender), registrationDTO.Gender.ToLower());
+                    user.Gender = (int)Enum.Parse(typeof(UserGender), registrationDTO.Gender.ToLower());
                 }
                 user.DateOfBirth = registrationDTO.DateOfBirth;
                 await _context.AddAsync(user);

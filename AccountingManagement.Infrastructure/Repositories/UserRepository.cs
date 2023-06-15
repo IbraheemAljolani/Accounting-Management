@@ -42,8 +42,8 @@ namespace AccountingManagement.Infrastructure.Repositories
                         Email = x.Email,
                         FirstName = x.FirstName,
                         LastName = x.LastName,
-                        Status = ((Status)x.Status).ToString(),
-                        Gender = ((Gender)x.Gender).ToString(),
+                        Status = ((UserStatus)x.Status).ToString(),
+                        Gender = ((UserGender)x.Gender).ToString(),
                         DateOfBirth = x.DateOfBirth
                     }).ToListAsync();
 
@@ -113,12 +113,12 @@ namespace AccountingManagement.Infrastructure.Repositories
                     }
                     if (string.IsNullOrEmpty(editDTO.Status) || editDTO.Status != "string")
                     {
-                        desiredUser.Status = (int)Enum.Parse(typeof(Status), editDTO.Status.ToLower());
+                        desiredUser.Status = (int)Enum.Parse(typeof(UserStatus), editDTO.Status.ToLower());
                         desiredUser.UpdateDateTimeUtc = DateTime.UtcNow;
                     }
                     if (string.IsNullOrEmpty(editDTO.Gender) || editDTO.Gender != "string")
                     {
-                        desiredUser.Gender = (int)Enum.Parse(typeof(Gender), editDTO.Gender.ToLower());
+                        desiredUser.Gender = (int)Enum.Parse(typeof(UserGender), editDTO.Gender.ToLower());
                         desiredUser.UpdateDateTimeUtc = DateTime.UtcNow;
                     }
                     if (string.IsNullOrEmpty(editDTO.DateOfBirth) || editDTO.DateOfBirth != "string")

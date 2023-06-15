@@ -15,9 +15,10 @@ namespace AccountingManagement.Infrastructure.UnitOfWork
     {
         #region Fields & Properties
         private readonly AccountingManagementContext _context;
-        public IAuthRepository AuthRepository {get; private set;}
-        public IUserRepository UserRepository { get; private set;}
-        public IAccountRepository AccountRepository { get; private set;}
+        public IAuthRepository AuthRepository { get; private set; }
+        public IUserRepository UserRepository { get; private set; }
+        public IAccountRepository AccountRepository { get; private set; }
+        public ITransactionRepository TransactionRepository { get; private set; }
 
         #endregion
 
@@ -28,6 +29,7 @@ namespace AccountingManagement.Infrastructure.UnitOfWork
             AuthRepository = new AuthRepository(_context);
             UserRepository = new UserRepository(_context);
             AccountRepository = new AccountRepository(_context);
+            TransactionRepository = new TransactionRepository(_context);
         }
         #endregion
 
@@ -44,7 +46,5 @@ namespace AccountingManagement.Infrastructure.UnitOfWork
             _context.Dispose();
         }
         #endregion
-
-        
     }
 }

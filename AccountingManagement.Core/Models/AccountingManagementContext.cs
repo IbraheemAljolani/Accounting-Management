@@ -9,16 +9,13 @@ namespace AccountingManagement.Core.Models
     public partial class AccountingManagementContext : DbContext
     {
         private readonly IConfiguration _configuration;
-        private static string AMContext;
-        public AccountingManagementContext()
-        {
-        }
+        private static string connectionStrings;
 
         public AccountingManagementContext(DbContextOptions<AccountingManagementContext> options, IConfiguration configuration)
             : base(options)
         {
             _configuration = configuration;
-            AMContext = _configuration.GetConnectionString("AMContext");
+            connectionStrings = _configuration.GetValue<string>("connectionStrings:AMContext");
         }
 
         public virtual DbSet<AccountTable> AccountTables { get; set; } = null!;
@@ -30,7 +27,7 @@ namespace AccountingManagement.Core.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer(AMContext);
+                optionsBuilder.UseSqlServer(connectionStrings);
             }
         }
 
@@ -110,6 +107,10 @@ namespace AccountingManagement.Core.Models
 
                 entity.Property(e => e.Amount).HasColumnType("money");
 
+                entity.Property(e => e.CreditType)
+                    .HasMaxLength(10)
+                    .IsUnicode(false);
+
                 entity.Property(e => e.DateTimeUtc)
                     .HasColumnType("datetime")
                     .HasColumnName("DateTime_UTC");
@@ -118,11 +119,7 @@ namespace AccountingManagement.Core.Models
                     .HasColumnType("datetime")
                     .HasColumnName("Server_DateTime");
 
-                entity.Property(e => e.Status)
-                    .HasMaxLength(10)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.Type)
+                entity.Property(e => e.TransactionStatus)
                     .HasMaxLength(10)
                     .IsUnicode(false);
 

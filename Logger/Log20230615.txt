@@ -1,2 +1,8 @@
 2023-06-15 00:20:05.272 +03:00 [ERR] The string 'string' was not recognized as a valid DateTime. There is an unknown word starting at index '0'.
 2023-06-15 00:20:05.364 +03:00 [ERR] The string 'string' was not recognized as a valid DateTime. There is an unknown word starting at index '0'.
+2023-06-15 12:10:46.955 +03:00 [ERR] Value cannot be null. (Parameter 'connectionString')
+2023-06-15 12:10:47.038 +03:00 [ERR] Value cannot be null. (Parameter 'connectionString')
+2023-06-15 12:11:31.476 +03:00 [ERR] Value cannot be null. (Parameter 'connectionString')
+2023-06-15 12:11:31.547 +03:00 [ERR] Value cannot be null. (Parameter 'connectionString')
+2023-06-15 12:16:12.645 +03:00 [ERR] Value cannot be null. (Parameter 'connectionString')
+2023-06-15 12:16:12.717 +03:00 [ERR] Value cannot be null. (Parameter 'connectionString')

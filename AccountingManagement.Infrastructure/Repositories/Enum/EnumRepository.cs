@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace AccountingManagement.Infrastructure.Repositories
 {
-    #region Gender
-    public enum Gender
+    #region User Gender
+    public enum UserGender
     {
         male,
         female,
@@ -15,8 +15,8 @@ namespace AccountingManagement.Infrastructure.Repositories
     }
     #endregion
 
-    #region Status
-    public enum Status
+    #region User Status
+    public enum UserStatus
     {
         active,
         delete
@@ -29,6 +29,22 @@ namespace AccountingManagement.Infrastructure.Repositories
         jd,
         usd,
         eur
+    }
+    #endregion
+
+    #region Credit Type
+    public enum CreditType
+    {
+        credit,
+        debit
+    }
+    #endregion
+
+    #region Transaction Status
+    public enum TransactionStatus
+    {
+        completed,
+        reversed,
     }
     #endregion
 }

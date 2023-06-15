@@ -77,7 +77,7 @@ namespace AccountingManagement.Api.Controllers
                 if (isValidEmail == null)
                     return NotFound("The email does not exist. Please check the validity of the email and try again.");
 
-                var isValidUser = await _context.UserTables.SingleOrDefaultAsync(x => x.Email == loginDTO.Email && x.Status == 2);
+                var isValidUser = await _context.UserTables.SingleOrDefaultAsync(x => x.Email == loginDTO.Email && x.Status == 0);
                 if (isValidUser != null)
                     return Unauthorized("The user has been deleted.");
 
@@ -136,7 +136,7 @@ namespace AccountingManagement.Api.Controllers
                 if (checkAccount == null)
                     return NotFound("Email not found");
 
-                var checkUser = await _context.UserTables.SingleOrDefaultAsync(x => x.Status == 2);
+                var checkUser = await _context.UserTables.SingleOrDefaultAsync(x => x.Status == 0);
                 if (checkUser != null)
                     return Unauthorized("The user has been deleted.");
 
