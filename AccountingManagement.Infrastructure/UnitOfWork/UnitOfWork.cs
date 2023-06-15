@@ -17,6 +17,7 @@ namespace AccountingManagement.Infrastructure.UnitOfWork
         private readonly AccountingManagementContext _context;
         public IAuthRepository AuthRepository {get; private set;}
         public IUserRepository UserRepository { get; private set;}
+        public IAccountRepository AccountRepository { get; private set;}
 
         #endregion
 
@@ -26,6 +27,7 @@ namespace AccountingManagement.Infrastructure.UnitOfWork
             this._context = _context;
             AuthRepository = new AuthRepository(_context);
             UserRepository = new UserRepository(_context);
+            AccountRepository = new AccountRepository(_context);
         }
         #endregion
 

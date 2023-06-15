@@ -42,8 +42,8 @@ namespace AccountingManagement.Infrastructure.Repositories
                         Email = x.Email,
                         FirstName = x.FirstName,
                         LastName = x.LastName,
-                        Status = ((UserStatus)x.Status).ToString(),
-                        Gender = ((UserGender)x.Gender).ToString(),
+                        Status = ((Status)x.Status).ToString(),
+                        Gender = ((Gender)x.Gender).ToString(),
                         DateOfBirth = x.DateOfBirth
                     }).ToListAsync();
 
@@ -113,12 +113,12 @@ namespace AccountingManagement.Infrastructure.Repositories
                     }
                     if (string.IsNullOrEmpty(editDTO.Status) || editDTO.Status != "string")
                     {
-                        desiredUser.Status = (int)Enum.Parse(typeof(UserStatus), editDTO.Status);
+                        desiredUser.Status = (int)Enum.Parse(typeof(Status), editDTO.Status.ToLower());
                         desiredUser.UpdateDateTimeUtc = DateTime.UtcNow;
                     }
                     if (string.IsNullOrEmpty(editDTO.Gender) || editDTO.Gender != "string")
                     {
-                        desiredUser.Gender = (int)Enum.Parse(typeof(UserGender), editDTO.Gender);
+                        desiredUser.Gender = (int)Enum.Parse(typeof(Gender), editDTO.Gender.ToLower());
                         desiredUser.UpdateDateTimeUtc = DateTime.UtcNow;
                     }
                     if (string.IsNullOrEmpty(editDTO.DateOfBirth) || editDTO.DateOfBirth != "string")
@@ -156,7 +156,7 @@ namespace AccountingManagement.Infrastructure.Repositories
         }
         #endregion
 
-        #region Delete the user Repository
+        #region Delete the users Repository
         public async Task<int> DeleteUsersAsync(List<int> userIds)
         {
             try
@@ -173,7 +173,7 @@ namespace AccountingManagement.Infrastructure.Repositories
                         _context.Update(logoutForUser);
                         await _context.SaveChangesAsync();
                     }
-                    user.Status = 2;
+                    user.Status = 1;
                     _context.Update(user);
                 }
                 return await _context.SaveChangesAsync();

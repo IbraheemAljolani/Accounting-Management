@@ -12,6 +12,7 @@ namespace AccountingManagement.Core.IUnitOfWork
     {
         IAuthRepository AuthRepository { get; }
         IUserRepository UserRepository { get; }
+        IAccountRepository AccountRepository { get; }
         public Task<int> CommitAsync();
 
     }

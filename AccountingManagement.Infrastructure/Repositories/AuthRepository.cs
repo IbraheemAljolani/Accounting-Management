@@ -1,4 +1,5 @@
-﻿using AccountingManagement.Core.DTOs.AuthDTOs;
+﻿using AccountingManagement.Core.DTOs.AccountDTOs;
+using AccountingManagement.Core.DTOs.AuthDTOs;
 using AccountingManagement.Core.Helpers;
 using AccountingManagement.Core.Interface;
 using AccountingManagement.Core.Models;
@@ -20,23 +21,6 @@ using System.Threading.Tasks;
 
 namespace AccountingManagement.Infrastructure.Repositories
 {
-    #region enum User Status
-    public enum UserStatus
-    {
-        Active = 1,
-        Delete
-    }
-    #endregion
-
-    #region enum User Gender
-    public enum UserGender
-    {
-        Male = 1,
-        Female,
-        Other
-    }
-    #endregion
-
     public class AuthRepository : IAuthRepository
     {
         #region Fields & Property
@@ -60,13 +44,16 @@ namespace AccountingManagement.Infrastructure.Repositories
                 UserTable user = new UserTable();
                 user.ServerDateTime = DateTime.Now;
                 user.DateTimeUtc = DateTime.UtcNow;
-                user.UpdateDateTimeUtc = SqlDateTime.MinValue.Value;
+                user.UpdateDateTimeUtc = DateTime.UtcNow;
                 user.Username = registrationDTO.Username;
                 user.Email = registrationDTO.Email;
                 user.FirstName = registrationDTO.FirstName;
                 user.LastName = registrationDTO.LastName;
                 user.Status = 1;
-                user.Gender = (int)Enum.Parse(typeof(UserGender), registrationDTO.Gender);
+                if (Enum.IsDefined(typeof(Gender), registrationDTO.Gender.ToLower()))
+                {
+                    user.Gender = (int)Enum.Parse(typeof(Gender), registrationDTO.Gender.ToLower());
+                }
                 user.DateOfBirth = registrationDTO.DateOfBirth;
                 await _context.AddAsync(user);
                 rowsaffected += await _context.SaveChangesAsync();

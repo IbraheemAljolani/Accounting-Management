@@ -89,6 +89,9 @@ namespace AccountingManagement.Api.Controllers
         #endregion
 
         #region Edit User
+        /// <summary>
+        /// Edit user.
+        /// </summary>
         [HttpPut]
         [Route("EditUser")]
         public async Task<IActionResult> EditUser([FromBody] EditUserDTO editDTO, [FromRoute] int userId)
