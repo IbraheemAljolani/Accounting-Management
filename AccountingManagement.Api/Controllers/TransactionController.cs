@@ -90,7 +90,7 @@ namespace AccountingManagement.Api.Controllers
             {
                 var isExistTransaction = await _context.TransactionTables.SingleOrDefaultAsync(x => x.TransactionId == transactionId);
                 if (isExistTransaction == null)
-                    return NotFound("Account not found.");
+                    return NotFound("Transaction not found.");
 
                 var modified = await _unitOfWork.TransactionRepository.ModifyTransactionAsync(transactionId, transactionDTO);
                 return Ok(modified);
@@ -119,7 +119,7 @@ namespace AccountingManagement.Api.Controllers
             if (isDelete <= 0)
                 return BadRequest("No transactions were deleted.");
 
-            return Ok("transactions have been deleted successfully.");
+            return Ok("Transactions have been deleted successfully.");
         }
         #endregion
     }
