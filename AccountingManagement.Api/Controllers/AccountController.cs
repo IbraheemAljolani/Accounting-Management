@@ -106,15 +106,16 @@ namespace AccountingManagement.Api.Controllers
         /// <summary>
         /// Deletes one or more account.
         /// </summary>
-        [HttpDelete]
+        [HttpPost]
         [Route("[action]")]
-        public async Task<IActionResult> DeleteAccounts([FromBody] List<int> accountIds)
+        public async Task<IActionResult> DeleteAccounts([FromBody] accountDTO accountDTO)
         {
-            var accountToDelete = await _context.AccountTables.Where(x => accountIds.Contains(x.AccountId)).ToListAsync();
+            List<int> acccountIds = accountDTO.accountIds;
+            var accountToDelete = await _context.AccountTables.Where(x => acccountIds.Contains(x.AccountId)).ToListAsync();
             if (accountToDelete.Count == 0)
                 return NotFound("No accounts found with the provided IDs.");
 
-            var isDelete = await _unitOfWork.AccountRepository.DeleteAccountAsync(accountIds);
+            var isDelete = await _unitOfWork.AccountRepository.DeleteAccountAsync(accountDTO);
             if (isDelete <= 0)
                 return BadRequest("No accounts were deleted.");
 

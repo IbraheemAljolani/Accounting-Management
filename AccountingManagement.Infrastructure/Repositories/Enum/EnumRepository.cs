@@ -28,7 +28,6 @@ namespace AccountingManagement.Infrastructure.Repositories
     {
         jd,
         usd,
-        eur
     }
     #endregion
 

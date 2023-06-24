@@ -11,7 +11,7 @@ namespace AccountingManagement.Core.Interfaces
     public interface IUserRepository
     {
         Task<IEnumerable<GetAllUsersDTO>> GetAllUsersAsync(string userName, string email, int userId);
-        Task<int> DeleteUsersAsync(List<int> userIds);
+        Task<int> DeleteUsersAsync(deleteDTO dto);
         Task<string> ModifyUserAsync(EditUserDTO editDTO, int userId);
     }
 }

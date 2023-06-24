@@ -107,15 +107,16 @@ namespace AccountingManagement.Api.Controllers
         /// <summary>
         /// Deletes one or more transaction.
         /// </summary>
-        [HttpDelete]
+        [HttpPost]
         [Route("[action]")]
-        public async Task<IActionResult> DeleteTransactions([FromBody] List<int> transactionIds)
+        public async Task<IActionResult> DeleteTransactions([FromBody] transactionDTO transactionDTO)
         {
+            List<int> transactionIds = transactionDTO.transactionIds;
             var transactionToDelete = await _context.TransactionTables.Where(x => transactionIds.Contains(x.TransactionId)).ToListAsync();
             if (transactionToDelete.Count == 0)
                 return NotFound("No transactions found with the provided IDs.");
 
-            var isDelete = await _unitOfWork.TransactionRepository.DeleteTransactionAsync(transactionIds);
+            var isDelete = await _unitOfWork.TransactionRepository.DeleteTransactionAsync(transactionDTO);
             if (isDelete <= 0)
                 return BadRequest("No transactions were deleted.");
 

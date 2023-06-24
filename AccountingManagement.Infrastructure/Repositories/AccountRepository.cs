@@ -47,13 +47,13 @@ namespace AccountingManagement.Infrastructure.Repositories
                     });
 
                 if (userId > 0)
-                    listOfAccounts = listOfAccounts.Where(x => x.UserId == userId.ToString());
+                    listOfAccounts = listOfAccounts.Where(x => x.UserId.Contains(userId.ToString()));
 
                 if (accountId > 0)
-                    listOfAccounts = listOfAccounts.Where(x => x.AccountId == accountId.ToString());
+                    listOfAccounts = listOfAccounts.Where(x => x.AccountId.Contains(accountId.ToString()));
 
                 if (accountNumber > 0)
-                    listOfAccounts = listOfAccounts.Where(x => x.AccountNumber == accountNumber.ToString());
+                    listOfAccounts = listOfAccounts.Where(x => x.AccountNumber.Contains(accountNumber.ToString()));
 
                 return await listOfAccounts.ToListAsync();
             }
@@ -62,6 +62,38 @@ namespace AccountingManagement.Infrastructure.Repositories
                 Log.Error(ex.Message);
                 throw;
             }
+            //try
+            //{
+            //    var listOfAccounts = _context.AccountTables
+            //        .Select(x => new GetAllAccountsDTO
+            //        {
+            //            AccountId = x.AccountId.ToString(),
+            //            UserId = x.UserId.ToString(),
+            //            ServerDateTime = x.ServerDateTime,
+            //            DateTimeUtc = x.DateTimeUtc,
+            //            UpdateDateTimeUtc = x.UpdateDateTimeUtc,
+            //            AccountNumber = x.AccountNumber,
+            //            Balance = x.Balance.ToString(),
+            //            Currency = x.Currency,
+            //            Status = ((UserStatus)x.Status).ToString()
+            //        });
+
+            //    if (userId > 0)
+            //        listOfAccounts = listOfAccounts.Where(x => x.UserId == userId.ToString());
+
+            //    if (accountId > 0)
+            //        listOfAccounts = listOfAccounts.Where(x => x.AccountId == accountId.ToString());
+
+            //    if (accountNumber > 0)
+            //        listOfAccounts = listOfAccounts.Where(x => x.AccountNumber == accountNumber.ToString());
+
+            //    return await listOfAccounts.ToListAsync();
+            //}
+            //catch (Exception ex)
+            //{
+            //    Log.Error(ex.Message);
+            //    throw;
+            //}
         }
         #endregion
 
@@ -132,7 +164,7 @@ namespace AccountingManagement.Infrastructure.Repositories
                     if (!Regex.IsMatch(editAccountDTO.Balance, @"^\d+(\.\d+)?$"))
                         return "Invalid Balance.";
 
-                    desiredAccount.Balance = Int32.Parse(editAccountDTO.Balance);
+                    desiredAccount.Balance = (decimal)Double.Parse(editAccountDTO.Balance);
                     desiredAccount.UpdateDateTimeUtc = DateTime.UtcNow;
                 }
                 if (string.IsNullOrEmpty(editAccountDTO.Currency) || editAccountDTO.Currency != "string")
@@ -168,10 +200,11 @@ namespace AccountingManagement.Infrastructure.Repositories
         #endregion
 
         #region Delete the accounts Repository
-        public async Task<int> DeleteAccountAsync(List<int> accountIds)
+        public async Task<int> DeleteAccountAsync(accountDTO accountDTO)
         {
             try
             {
+                List<int> accountIds = accountDTO.accountIds;
                 var accountToDelete = await _context.AccountTables.Where(x => accountIds.Contains(x.AccountId)).ToListAsync();
 
                 foreach (var account in accountToDelete)

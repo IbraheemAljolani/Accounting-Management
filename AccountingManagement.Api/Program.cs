@@ -18,6 +18,20 @@ builder.Services.AddDbContext<AccountingManagementContext>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+#region corsOptions
+builder.Services.AddCors(corsOptions =>
+{
+    corsOptions.AddPolicy("x",
+    builder =>
+    {
+        builder
+           .AllowAnyMethod().AllowAnyOrigin()
+           .AllowAnyHeader().AllowCredentials().
+            WithOrigins("http://localhost:4200");
+    });
+});
+#endregion
+
 #region Dependency Injection
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
 #endregion
@@ -53,7 +67,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseCors("x");
 app.UseAuthentication();
 
 app.UseAuthorization();

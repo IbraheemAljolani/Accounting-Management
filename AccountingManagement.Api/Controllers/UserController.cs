@@ -93,7 +93,7 @@ namespace AccountingManagement.Api.Controllers
         /// Edit user.
         /// </summary>
         [HttpPut]
-        [Route("EditUser")]
+        [Route("EditUser/{userId}")]
         public async Task<IActionResult> EditUser([FromBody] EditUserDTO editDTO, [FromRoute] int userId)
         {
             try
@@ -117,17 +117,18 @@ namespace AccountingManagement.Api.Controllers
         /// <summary>
         /// Deletes one or more users.
         /// </summary>
-        [HttpDelete]
+        [HttpPost]
         [Route("DeleteUsers")]
-        public async Task<IActionResult> DeleteUsers([FromBody] List<int> userIds)
+        public async Task<IActionResult> DeleteUsers([FromBody] deleteDTO dto)
         {
+            List<int> userIds = dto.userIds;
             try
             {
                 var usersToDelete = await _context.UserTables.Where(x => userIds.Contains(x.UserId)).ToListAsync();
                 if (usersToDelete.Count == 0)
                     return NotFound("No users found with the provided IDs.");
 
-                var isDelete = await _unitOfWork.UserRepository.DeleteUsersAsync(userIds);
+                var isDelete = await _unitOfWork.UserRepository.DeleteUsersAsync(dto);
                 if (isDelete <= 0)
                     return BadRequest("No users were deleted.");
 

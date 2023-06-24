@@ -70,7 +70,7 @@ namespace AccountingManagement.Infrastructure.Repositories
             try
             {
 
-                var isValidAccount = await _context.AccountTables.SingleOrDefaultAsync(x => x.AccountId == transactionDTO.AccountId && x.Status != 1);
+                var isValidAccount = await _context.AccountTables.SingleOrDefaultAsync(x => x.AccountId == transactionDTO.AccountId);
                 if (isValidAccount == null)
                     return 0;
 
@@ -174,6 +174,15 @@ namespace AccountingManagement.Infrastructure.Repositories
 
             if (transactionDTO.TransactionStatus != "string")
             {
+                if(transactionDTO.TransactionStatus.ToLower() == "reversed")
+                {
+                    desiredTransaction.TransactionStatus= transactionDTO.TransactionStatus.ToLower();
+                }
+                else
+                {
+                    desiredTransaction.TransactionStatus = transactionDTO.TransactionStatus.ToLower();
+                }
+
                 var isReversed = Enum.IsDefined(typeof(TransactionStatus), transactionDTO.TransactionStatus.ToLower());
                 if (isReversed)
                 {
@@ -182,6 +191,7 @@ namespace AccountingManagement.Infrastructure.Repositories
                         decimal lastBalance = accountInfo.Balance - desiredTransaction.Amount;
                         desiredTransaction.Amount = 0.00M;
                         accountInfo.Balance = lastBalance;
+
                         desiredTransaction.UpdateDateTimeUtc = DateTime.UtcNow;
                     }
                 }
@@ -194,10 +204,11 @@ namespace AccountingManagement.Infrastructure.Repositories
         #endregion
 
         #region Delete the Transactions Repository
-        public async Task<int> DeleteTransactionAsync(List<int> transactionIds)
+        public async Task<int> DeleteTransactionAsync(transactionDTO transactionDTO)
         {
             try
             {
+                List<int> transactionIds = transactionDTO.transactionIds;
                 var transactionToDelete = await _context.TransactionTables.Where(x => transactionIds.Contains(x.TransactionId)).ToListAsync();
 
                 foreach (var transaction in transactionToDelete)

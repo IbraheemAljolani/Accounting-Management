@@ -13,6 +13,6 @@ namespace AccountingManagement.Core.Interfaces
         Task<IEnumerable<GetAllAccountsDTO>> GetAllAccountAsync(int userId, int accountId, int accountNumber);
         Task<int> AddAccountAsync(AddAccountDTO accountDTO);
         Task<string> ModifyAccountAsync(int accountId, EditAccountDTO editAccountDTO);
-        Task<int> DeleteAccountAsync(List<int> accountIds);
+        Task<int> DeleteAccountAsync(accountDTO accountDTO);
     }
 }

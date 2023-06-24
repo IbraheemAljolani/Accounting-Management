@@ -48,10 +48,10 @@ namespace AccountingManagement.Infrastructure.Repositories
                     }).ToListAsync();
 
                 if (!string.IsNullOrEmpty(userName))
-                    getlistedOfUsers = getlistedOfUsers.Where(x => x.Username == userName).ToList();
+                    getlistedOfUsers = getlistedOfUsers.Where(x => x.Username.Contains(userName)).ToList();
 
                 if (!string.IsNullOrEmpty(email))
-                    getlistedOfUsers = getlistedOfUsers.Where(x => x.Email == email).ToList();
+                    getlistedOfUsers = getlistedOfUsers.Where(x => x.Email.Contains(email)).ToList();
 
                 if (userId > 0)
                     getlistedOfUsers = getlistedOfUsers.Where(x => x.UserId == userId).ToList();
@@ -81,22 +81,30 @@ namespace AccountingManagement.Infrastructure.Repositories
                         if (!isValidUsername)
                             return "Invalid username. Only English letters and numbers are allowed.";
 
-                        var isUsernameTaken = await _context.UserTables.AnyAsync(x => x.Username == editDTO.Username);
-                        if (isValidUsername)
-                            return "Username already exists. Please choose a different one.";
+                        if(desiredUser.Username != editDTO.Username)
+                        {
+                            var isUsernameTaken = await _context.UserTables.AnyAsync(x => x.Username == editDTO.Username);
+                            if (isValidUsername)
+                                return "Username already exists. Please choose a different one.";
+                        }
+                       
 
                         desiredUser.Username = editDTO.Username;
                         desiredUser.UpdateDateTimeUtc = DateTime.UtcNow;
                     }
                     if (string.IsNullOrEmpty(editDTO.Email) || editDTO.Email != "string")
                     {
+
                         var isValidEmail = Regex.IsMatch(editDTO.Email, @"^\w+([\.-]?\w+)*@(gmail\.com|yahoo\.com|hotmail\.com)$");
                         if (!isValidEmail)
                             return "Invalid email address, Ex: user@example.com";
 
-                        var IsEmailTaken = await _context.UserTables.AnyAsync(x => x.Email == editDTO.Email);
-                        if (IsEmailTaken)
-                            return "Email address already exists. Please choose a different one.";
+                        if (desiredUser.Email != editDTO.Email)
+                        {
+                            var IsEmailTaken = await _context.UserTables.AnyAsync(x => x.Email == editDTO.Email);
+                            if (IsEmailTaken)
+                                return "Email address already exists. Please choose a different one.";
+                        }
 
                         desiredUser.Email = editDTO.Email;
                         desiredUser.UpdateDateTimeUtc = DateTime.UtcNow;
@@ -113,7 +121,15 @@ namespace AccountingManagement.Infrastructure.Repositories
                     }
                     if (string.IsNullOrEmpty(editDTO.Status) || editDTO.Status != "string")
                     {
-                        desiredUser.Status = (int)Enum.Parse(typeof(UserStatus), editDTO.Status.ToLower());
+                        if (editDTO.Status == "active")
+                        {
+                            desiredUser.Status = (int)UserStatus.active;
+
+                        }
+                        else
+                        {
+                            desiredUser.Status = (int)UserStatus.delete;
+                        }
                         desiredUser.UpdateDateTimeUtc = DateTime.UtcNow;
                     }
                     if (string.IsNullOrEmpty(editDTO.Gender) || editDTO.Gender != "string")
@@ -131,7 +147,7 @@ namespace AccountingManagement.Infrastructure.Repositories
                     await _context.SaveChangesAsync();
                 }
 
-                if (desiredLogin != null && string.IsNullOrEmpty(editDTO.Password) || editDTO.Password != "string")
+                /*if (desiredLogin != null && string.IsNullOrEmpty(editDTO.Password) || editDTO.Password != "string")
                 {
                     var isValidPassword = Regex.IsMatch(editDTO.Password, @"^(?=.*[A-Z])(?=.*\d)\S{8,}$");
                     if (!isValidPassword)
@@ -145,7 +161,7 @@ namespace AccountingManagement.Infrastructure.Repositories
                     _context.Update(desiredLogin);
                     _context.Update(desiredUser);
                     await _context.SaveChangesAsync();
-                }
+                }*/
                 return "Modified successfully.";
             }
             catch (Exception ex)
@@ -157,10 +173,11 @@ namespace AccountingManagement.Infrastructure.Repositories
         #endregion
 
         #region Delete the users Repository
-        public async Task<int> DeleteUsersAsync(List<int> userIds)
+        public async Task<int> DeleteUsersAsync(deleteDTO dto)
         {
             try
             {
+                List<int> userIds = dto.userIds;
                 var usersToDelete = await _context.UserTables.Where(x => userIds.Contains(x.UserId)).ToListAsync();
 
                 foreach (var user in usersToDelete)
